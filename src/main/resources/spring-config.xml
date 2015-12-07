@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:data="http://www.incardata.com.cn/schema/tags"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+        http://www.incardata.com.cn/schema/tags http://www.incardata.com.cn/schema/tags/protocol.xsd">
+    <!-- 扫描文件 -->
+    <!-- 自动加载构建bean -->
+    <context:component-scan base-package="com.hp.data"/>
+    <data:protocol id="conversionTBox" class="com.hp.data.protocol.ConversionTBox" head="8995">
+        <data:head>
+            <data:element name="head" type="U_INT_16"/>                     <!--数据包标识-->
+            <data:element name="length" type="U_INT_16"/>                   <!--数据包长度-->
+            <data:element name="testFlag" type="U_INT_8"/>                  <!--是否是测试包，0正常1测试-->
+        </data:head>
+        <data:body>
+            <!--调度信息-->
+            <data:elementGroup name="dispatcherUp">
+                <data:element name="sendingTime" type="U_INT_32"/>          <!--从 1970-01-01 00:00:00 到现在的秒数来表示-->
+                <data:element name="applicationID" type="U_INT_8"/>         <!--业务类型编号-->
+                <data:element name="messageID" type="U_INT_8"/>             <!--消息类型编号-->
+                <data:element name="imei" type="STRING" size="15"/>         <!--International Mobile Equipment Identity-->
+                <data:element name="protocolVersionNumber" type="U_INT_8"/> <!--协议版本号-->
+                <data:element name="vehicleID" type="BYTE" size="2"/>            <!--车场编号-->
+                <data:element name="tripID" type="U_INT_16"/>                <!--记录电动机启动次数，0~65535 后清零-->
+                <data:element name="reserved" type="U_INT_16"/>             <!--预留-->
+            </data:elementGroup>
+            <data:elementGroup name="dispatcherDown">
+                <data:element name="sendingTime" type="U_INT_32"/>          <!--从 1970-01-01 00:00:00 到现在的秒数来表示-->
+                <data:element name="applicationID" type="U_INT_8"/>         <!--业务类型编号-->
+                <data:element name="messageID" type="U_INT_8"/>             <!--消息类型编号-->
+            </data:elementGroup>
+            <data:elementGroup name="gpsPosition">
+                <data:element name="isLocation" type="U_INT_8"/>        <!--定位状态：Bit0: 0:有效定位；1:无效 定位（当数据通信正常，而不能获取 定位信息时，发送最后一次有效定位 信息，并将定位状态置为无效。） Bit1: 0:北纬；1:南纬 Bit2: 0:东经；1:西经 Bit3~7:预留固定 0 -->
+                <data:element name="latitude" type="U_INT_32"/>         <!--经度： L*0.00390625-->
+                <data:element name="longitude" type="U_INT_32"/>        <!--纬度： L*0.00390625 -->
+                <data:element name="speed" type="U_INT_16"/>            <!--速度 0~2200[0km/h~220km/m],最小 计算单位 0.1km/h -->
+                <data:element name="heading" type="U_INT_16"/>          <!--方向 0~359 正北为 0，顺时针 -->
+            </data:elementGroup>
+            <data:elementGroup name="ratedVehicle">
+                <data:element name="frequencyForRealTimeReport" type="U_INT_16"/> <!--1~600（1~600s）最小计量 单元1s Fix 10S -->
+                <data:element name="frequencyForWarningReport" type="U_INT_16"/> <!--0～60000（表示0ms～ 60000ms），最小计量单元 ：1ms Fix 1S -->
+                <data:element name="frequencyHeartbeat" type="U_INT_8"/>         <!--1～240（表示1s～240s）， 最小计量单元：1s Fix 60S-->
+                <data:element name="timeOutForTerminalSearch" type="U_INT_16"/>   <!--1～600（表示1s～600s）， 最小计量单元：1s  Fix 60S[3次retry累计180S] -->
+                <data:element name="timeOutForServerSearch" type="U_INT_16"/>     <!--1～600（表示1s～600s）， 最小计量单元：1s  Fix 60S[3次retry累计180S] -->
+                <data:element name="vehicleType" type="U_INT_8"/>                 <!--车辆类型-->
+                <data:element name="vehicleModels" type="U_INT_16"/>              <!--如：e50 等 -->
+                <data:element name="maxSpeed" type="U_INT_8"/>                    <!--有效值范围：1～254 [表示 0km/h～254km/h] 最小计量单元：1km/h -->
+                <data:element name="hardwareVersion" type="STRING" size="5"/>     <!--硬件版本，终端自行定义-->
+                <data:element name="softwareVersion" type="STRING" size="5"/>     <!--软件版本，终端自行定义-->
+                <data:element name="frequencySaveLocalMedia" type="U_INT_16"/>   <!--终端本地存储时间周期 0~60000（0~60000ms）最 小计量单元：1ms. Fix 1S-->
+                <data:element name="enterpriseBroadcastAddress" type="BYTE" size="6"/> <!--企业平台 IP，IPV4 的前 两个字节为 0 -->
+                <data:element name="enterpriseBroadcastPort" type="U_INT_16"/>    <!--企业平台端口 -->
+            </data:elementGroup>
+            <data:elementGroup name="realTimeReplacement">
+                <data:element name="fuelOil" type="U_INT_16"/>           <!--燃油量 分辨率0.5L，偏移量0，显示范围： 0L~511.5L 上报数据范围： 0~1023 缺省值： 0x0000 -->
+                <data:element name="avgOilA" type="U_INT_16"/>           <!--平均油耗A 分辨率0.1L/KM，偏移量0，显示范围：0L/100KM~51.1L/100KM 上报数据范围： 0~511 缺省值： 0 x0000 -->
+                <data:element name="avgOilB" type="U_INT_16"/>           <!--平均油耗B 分辨率0.1L/KM，偏移量0，显示范围：0L/100KM~51.1L/100KM 上报数据范围： 0~511 缺省值： 0 x0000 -->
+                <data:element name="serviceIntervall" type="U_INT_16"/>  <!-- 保养里程 分辨率1KM，偏移量0，显示范围：0KM-16383KM 上报数据范围： 0-16383 缺省值： 0 x0000-->
+                <data:element name="leftFrontTirePressure" type="U_INT_8"/><!--分辨率2.8 kpa，偏移量0 显示范围： 0kPa ~714 kpa 上报数据范围： 0~255 缺省值： 0x00 -->
+                <data:element name="leftRearTirePressure" type="U_INT_8"/><!--分辨率2.8 kpa，偏移量0 显示范围： 0kPa ~714 kpa 上报数据范围： 0~255 缺省值： 0x00 -->
+                <data:element name="rightFrontTirePressure" type="U_INT_8"/><!--分辨率2.8 kpa，偏移量0 显示范围： 0kPa ~714 kpa 上报数据范围： 0~255 缺省值： 0x00 -->
+                <data:element name="rightRearTirePressure" type="U_INT_8"/><!--分辨率2.8 kpa，偏移量0 显示范围： 0kPa ~714 kpa 上报数据范围： 0~255 缺省值： 0x00 -->
+                <data:element name="windowInformation" type="U_INT_8"/>   <!--Bit0~1： STAT_WindowFL Bit2~3： STAT_WindowFR	Bit4~5： STAT_WindowRL	Bit6~7： STAT_WindowRR	0x0： Open 0x1： ntermediate0x2： Close 0x3： Signal invalid-->
+                <data:element name="vehicleTemperature" type="U_INT_8"/>  <!--分辨率1 ℃，偏移量40，显示范围：-40℃ ~ 85℃上报数据范围： 0~125 缺省值： 0x32 无效值： 0xFF-->
+                <data:element name="vehicleOuterTemperature" type="U_INT_8"/><!--分辨率1 ℃，偏移量40，显示范围：-40℃ ~ 85℃上报数据范围： 0~125 缺省值： 0x32 无效值： 0xFF-->
+                <data:element name="doorInformation" type="U_INT_8"/>     <!--Bit0~1： STAT_DoorAjarFL Bit2~3：STAT_DoorAjarFR Bit4~5：STAT_DoorAjarRL Bit6~7：STAT_DoorAjarRR 0x0： Close0x1： Open0x2： Reserved0x3： Signal invalid-->
+            </data:elementGroup>
+            <data:elementGroup name="alarmDataStructure">
+                <data:element name="srsWarning" type="BYTE"/>                 <!-- 安全气囊报警 bit0-1 0x0 未触发 0x1触发-->
+                <data:element name="ataWarning" type="BYTE"/>                  <!-- 车辆防盗报警 bit0-1 0x0 未触发 0x1触发-->
+                <data:element name="safetyBeltCount" type="U_INT_8"/>                  <!-- 车辆防盗报警 bit0-1 0x0 未触发 0x1触发-->
+                <data:element name="vehicleSpeedLast" type="U_INT_16" size="300"/>                  <!-- 车辆防盗报警 bit0-1 0x0 未触发 0x1触发-->
+            </data:elementGroup>
+            <data:elementGroup name="failureDataStructure">
+                <data:element name="info1" type="BYTE"/>                  <!--显示范围：根据附件[M8x_WM_catalog_150707]中WARNING MESSAGE ID列判定 -->
+                <data:element name="info2" type="BYTE"/>                  <!--显示范围：根据附件[M8x_WM_catalog_150707]中WARNING MESSAGE ID列判定 -->
+                <data:element name="info3" type="BYTE"/>                  <!--显示范围：根据附件[M8x_WM_catalog_150707]中WARNING MESSAGE ID列判定 -->
+                <data:element name="info4" type="BYTE"/>                  <!--显示范围：根据附件[M8x_WM_catalog_150707]中WARNING MESSAGE ID列判定 -->
+                <data:element name="info5" type="BYTE"/>                  <!--显示范围：根据附件[M8x_WM_catalog_150707]中WARNING MESSAGE ID列判定 -->
+                <data:element name="info6" type="BYTE"/>                  <!--显示范围：根据附件[M8x_WM_catalog_150707]中WARNING MESSAGE ID列判定 -->
+                <data:element name="info7" type="BYTE"/>                  <!--显示范围：根据附件[M8x_WM_catalog_150707]中WARNING MESSAGE ID列判定 -->
+                <data:element name="info8" type="BYTE"/>                  <!--显示范围：根据附件[M8x_WM_catalog_150707]中WARNING MESSAGE ID列判定 -->
+            </data:elementGroup>
+            <!--电检(T-Box将向T平台发送电检请求)-->
+            <data:unit name="TBOX_DiaRequest" key="17_1">
+                <data:include name="dispatcherUp"/>
+                <!--内容信息-->
+                <data:element name="eventID" type="U_INT_32"/>          <!--事件记录ID一个事件完成周期内使相同的eventID-->
+                <data:element name="diaReportDataSize" type="U_INT_8"/><!--状态数据长度-->
+                <data:element name="serialNumber" type="STRING" size="12"/><!--车载终端编号-->
+                <data:element name="testTime" type="U_INT_32"/>          <!--测试时间： 使用从 1970-01-01 00:00:00 到现在的秒数来表示-->
+                <data:element name="ledTest" type="U_INT_8"/>            <!--LED检测结果 Bit0：成功 Bit1：失败 Bit2 ：未测试-->
+                <data:element name="farmTest" type="U_INT_8"/>           <!--FARM检测结果 Bit0：成功 Bit1：失败 Bit2 ：未测试-->
+                <data:element name="sdTest" type="U_INT_8"/>             <!--SD检测结果 Bit0：成功 Bit1：失败 Bit2 ：未测试-->
+                <data:element name="gpsTest" type="U_INT_8"/>            <!--GPS检测结果 Bit0：成功 Bit1：失败 Bit2 ：未测试-->
+                <data:element name="gprsTest" type="U_INT_8"/>           <!--GPRS Signal Strength检测 结果 Bit0：成功 Bit1：失败 Bit2 ：未测试-->
+                <data:element name="resetBatteryMapArrayTest" type="U_INT_8"/><!--Reset Battery Map Array检 测结果 Bit0：成功 Bit1：失败 Bit2 ：未测试-->
+                <data:element name="canActionTest" type="U_INT_8"/>      <!--CAN Action检测结果 Bit0：成功 Bit1：失败 Bit2 ：未测试 -->
+                <data:element name="serverCommTest" type="U_INT_8"/>     <!--serverCommTest 检测 结果 Bit0：成功 Bit1：失败 Bit2 ：未测试 -->
+            </data:unit>
+            <!--电检(T平台向T-Box反馈T-Box检测结果)-->
+            <data:unit name="TBOX_DiaResp" key="17_2">
+                <data:include name="dispatcherDown"/>
+                <!--内容信息-->
+                <data:element name="eventID" type="U_INT_32"/>           <!--事件记录 ID 一个事件完成周期内使用 相同的 eventID-->
+                <data:element name="diaReportResp" type="U_INT_8"/>    <!--0：成功 （TBOX_DiagRequest 中各 检测项均为成功） 1：失败 （TBOX_DiagRequest 中有一项为失败)-->
+            </data:unit>
+
+            <!--激活(T-BOX向T平台发送激活请求)-->
+            <data:unit name="TBOX_ActiveReq" key="18_1">
+                <data:include name="dispatcherUp"/>
+                <!--内容信息-->
+                <data:element name="eventID" type="U_INT_32"/>           <!--事件记录 ID 一个事件完成周期内使用相 同的 eventID-->
+                <data:element name="serialNumber" type="STRING" size="12"/><!--车载终端编号-->
+                <data:element name="vin" type="STRING" size="17"/>       <!--车辆唯一识别码-->
+            </data:unit>
+            <!--激活(T平台向T-BOX发送激活返回信息)-->
+            <data:unit name="TBOX_ActiveResp" key="18_2">
+                <data:include name="dispatcherDown"/>
+                <!--内容信息-->
+                <data:element name="eventID" type="U_INT_32"/>           <!--事件记录 ID 一个事件完成周期内使用相 同的 eventID-->
+                <data:element name="tBoxStatus" type="U_INT_8"/>         <!--T-Box 生命周期：  0：激活成功 1：激活失败-->
+                <data:element name="vin" type="STRING" size="17"/>       <!--车辆唯一识别码-->
+            </data:unit>
+            <!--激活(T-BOX向T平台发送激活请求)-->
+            <data:unit name="TBOX_ActiveResult" key="18_3">
+                <data:include name="dispatcherUp"/>
+                <!--内容信息-->
+                <data:element name="eventID" type="U_INT_32"/>           <!--事件记录 ID 一个事件完成周期内使用相 同的 eventID-->
+                <data:element name="rtmLifeCycle" type="U_INT_8"/>      <!--T-Box生命周期 0：激活成功 1：激活失败-->
+            </data:unit>
+
+            <!--注册(T-BOX向T平台发送注册请求)-->
+            <data:unit name="TBOX_RegisterReq" key="19_1">
+                <data:include name="dispatcherUp"/>
+                <!--内容信息-->
+                <data:element name="eventID" type="U_INT_32"/>              <!--事件记录ID一个事件完成周期内使相同的eventID-->
+                <data:element name="serialNumber" type="STRING" size="12"/> <!--车载终端编号(为验证 IMEI与 SerialNumber唯一对应-->
+                <data:element name="vin" type="STRING" size="17"/>          <!--车辆唯一识别码-->
+                <data:element name="swVersion" type="STRING" size="5"/>     <!--软件版本号-->
+                <data:element name="paramVersion" type="STRING" size="5"/>  <!--参数版本号-->
+                <data:element name="dbcVersion" type="STRING" size="5"/>    <!--DBC版本号-->
+            </data:unit>
+            <!--注册(T平台向T-BOX发送注册返回信息)-->
+            <data:unit name="TBOX_RegisterResp" key="19_2">
+                <data:include name="dispatcherDown"/>
+                <!--内容信息-->
+                <data:element name="eventID" type="U_INT_32"/>          <!--事件记录ID一个事件完成周期内使相同的eventID-->
+                <data:element name="registerResult" type="U_INT_8"/><!--0注册成功 1注册失败-->
+            </data:unit>
+
+            <!--远程唤醒(T-BOX向T平台发送唤醒请求)-->
+            <data:unit name="TBOX_RemoteWakeUpReq" key="20_1">
+                <data:include name="dispatcherUp"/>
+                <!--内容信息-->
+                <data:element name="eventID" type="U_INT_32"/>          <!--事件记录 ID 一个事件完成周期内使用相 同的 eventID-->
+                <data:element name="serialNumber" type="STRING" size="12"/><!--车载终端编号[为验证 IMEI 与 SerialNumber 唯一对应]-->
+                <data:element name="vin" type="STRING" size="17"/>      <!--车辆唯一识别码-->
+                <data:element name="swVersion" type="STRING" size="5"/> <!--软件版本号-->
+                <data:element name="pramVersion" type="STRING" size="5"/><!--参数版本号-->
+                <data:element name="dbcVersion" type="STRING" size="5"/> <!--DBC 版本号-->
+            </data:unit>
+            <!--远程唤醒(T平台向T-BOX发送唤醒返回信息)-->
+            <data:unit name="TBOX_RemoteWakeUpResp" key="20_2">
+                <data:include name="dispatcherDown"/>
+                <!--内容信息-->
+                <data:element name="eventID" type="U_INT_32"/>           <!--事件记录 ID 一个事件完成周期内使用相 同的 eventID-->
+                <data:element name="registerResult" type="U_INT_8"/>     <!--0：远程唤醒成功 1：远程唤醒失败-->
+            </data:unit>
+
+            <!--固定数据上报-->
+            <data:unit name="TBOX_RegularReportMes" key="33_1">
+                <data:include name="dispatcherUp"/>
+                <data:include name="ratedVehicle"/>
+            </data:unit>
+
+            <!--实时数据上报-->
+            <data:unit name="TBOX_RealTimeReportMes" key="34_1">
+                <data:include name="dispatcherUp"/>
+                <data:include name="gpsPosition"/>
+                <data:include name="realTimeReplacement"/>
+                </data:unit>
+
+            <!--补发实时数据上报-->
+            <data:unit name="TBOX_DataResendRealtimeData" key="35_1">
+                <data:include name="dispatcherUp"/>
+                <data:include name="gpsPosition"/>
+                <data:include name="realTimeReplacement"/>
+            </data:unit>
+
+            <!--报警数据上报-->
+            <data:unit name="TBOX_WarningMessage" key="36_1">
+                <data:include name="dispatcherUp"/>
+                <data:include name="gpsPosition"/>
+                <data:include name="alarmDataStructure"/>
+            </data:unit>
+
+            <!--补发报警数据上报-->
+            <data:unit name="TBOX_DataResendWarningData" key="37_1">
+                <data:include name="dispatcherUp"/>
+                <data:include name="gpsPosition"/>
+                <data:include name="alarmDataStructure"/>
+            </data:unit>
+
+            <!--心跳数据上报(T-Box向T平台发送心跳请求)-->
+            <data:unit name="TBOX_HeartbeatReq" key="38_1">
+                <data:include name="dispatcherUp"/>
+                <data:element name="eventID" type="U_INT_32"/>     <!--事件记录 ID 一个事件完成周期内使用 相同的 eventID-->
+            </data:unit>
+            <!--心跳数据上报(T平台向T-Box反馈心跳应答)-->
+            <data:unit name="TBOX_HeartbeatResp" key="38_2">
+                <data:include name="dispatcherDown"/>
+                <data:element name="eventID" type="U_INT_32"/>     <!--事件记录 ID 一个事件完成周期内使用 相同的 eventID-->
+            </data:unit>
+
+            <!--休眠请求-->
+            <data:unit name="TBOX_SleepReq" key="39_1">
+                <data:include name="dispatcherUp"/>
+                <data:element name="eventID" type="U_INT_32"/>
+            </data:unit>
+            <!--休眠响应-->
+            <data:unit name="TBOX_SleepResp" key="39_2">
+                <data:include name="dispatcherDown"/>
+                <data:element name="eventID" type="U_INT_32"/>
+            </data:unit>
+
+            <!--故障数据上报-->
+            <data:unit name=" TBOX_FailureMessage" key="40_1">
+                <data:include name="dispatcherUp"/>
+                <data:include name="gpsPosition"/>
+                <data:include name="failureDataStructure"/>
+            </data:unit>
+
+            <!--补发故障数据上报-->
+            <data:unit name="TBOX_DataResendFailureData" key="41_1">
+                <data:include name="dispatcherUp"/>
+                <data:include name="gpsPosition"/>
+                <data:include name="failureDataStructure"/>
+            </data:unit>
+
+            <!--远程控制命令(T平台向T-Box发送远程控制预请求)-->
+            <data:unit name="TBOX_RemoteControlPreconditionReq" key="49_1">
+                <data:include name="dispatcherDown"/>
+                <data:element name="eventID" type="U_INT_32"/>    <!--事件记录 ID 一个事件完成周期 内使用相同的 eventID-->
+            </data:unit>
+            <!--远程控制命令(T-Box向T平台反馈远程控制预请求响应)-->
+            <data:unit name="TBOX_RemoteControlPreconditionResp" key="49_2">
+                <data:include name="dispatcherUp"/>
+                <data:element name="eventID" type="U_INT_32"/>    <!--事件记录 ID 一个事件完成周期 内使用相同的 eventID-->
+                <data:element name="time" type="U_INT_32"/>
+                <data:element name="ambientAirTemperature" type="U_INT_8"/>
+                <data:element name="fuelLevel" type="U_INT_16"/>
+                <data:element name="tempIntern" type="U_INT_8"/>
+                <data:element name="averageConsumptionTripA" type="U_INT_16"/>
+                <data:element name="averageConsumptionTripB" type="U_INT_16"/>
+                <data:element name="averageSpeedTripA" type="U_INT_8"/>
+                <data:element name="averageSpeedTripB" type="U_INT_8"/>
+                <data:element name="sesam_clamp_stat" type="BYTE"/>
+                <data:element name="stat_remote_start" type="BYTE"/>
+                <data:element name="gearLevelPositon" type="BYTE"/>
+                <data:element name="vehicleSpeed" type="U_INT_16"/>
+                <data:element name="stateOfChargeACM_Crash_Status" type="BYTE"/>
+                <data:element name="bcm_Stat_Door_Flap" type="BYTE" size="2"/>
+                <data:element name="bcm_Stat_Central_Lock" type="BYTE"/>
+                <data:element name="stat_lin_2" type="BYTE"/>
+                <data:element name="epb_status" type="BYTE"/>
+                <data:element name="stat_lin_1" type="BYTE"/>
+                <data:element name="scm_button_status" type="BYTE" size="3"/>
+                <data:element name="scm_cruise_control" type="BYTE"/>
+                <data:element name="scm_wiper" type="BYTE" size="2"/>
+                <data:element name="preconditionRespTime" type="U_INT_8"/>
+            </data:unit>
+            <!--远程控制命令(T平台向T-Box发送远程控制请求)-->
+            <data:unit name="TBOX_RemoteControlCmd" key="49_3">
+                <data:include name="dispatcherDown"/>
+                <data:element name="eventID" type="U_INT_32"/>    <!--事件记录 ID 一个事件完成周期 内使用相同的 eventID-->
+                <data:element name="remoteControlType" type="U_INT_16"/><!--0：远程启动发动机  1：远程关闭发动机  2：车门上锁  3：车门解锁  4：空调开启  5：空调关闭  6：座椅加热  7：座椅停止加热  8：远程发动机限制  9：远程发动机限制关闭  10：远程寻车-->
+                <data:element name="acTemperature" type="U_INT_8"/><!--设置空调温度 0~200[0~200] 最小计量单元：1℃ type=4时有效-->
+            </data:unit>
+            <!--远程控制命令(T-Box向T平台反馈远程控制结果)-->
+            <data:unit name="TBOX_RemoteControlAck" key="49_4">
+                <data:include name="dispatcherUp"/>
+                <data:element name="eventID" type="U_INT_32"/>   <!--事件记录 ID 一个事件完成周期 内使用相同的 eventID-->
+                <data:element name="remoteControlAck" type="U_INT_8"/><!--0：无效 1：远程命令已接收 -->
+            </data:unit>
+            <!--远程控制命令(T-Box向T平台反馈远程控制结果)-->
+            <data:unit name="TBOX_RemoteControlRst" key="49_5">
+                <data:include name="dispatcherUp"/>
+                <data:element name="eventID" type="U_INT_32"/>   <!--事件记录 ID 一个事件完成周期 内使用相同的 eventID-->
+                <data:element name="remoteControlAck" type="U_INT_8"/><!--0：成功 1：失败 -->
+                <data:element name="remoteControlTime" type="U_INT_8"/><!--执行次数 -->
+            </data:unit>
+
+
+            <!--参数查询(T平台向T-Box发送参数查询请求)-->
+            <data:unit name="TBOX_PramStatusCmd" key="65_1">
+                <data:include name="dispatcherDown"/>
+                <data:element name="eventID" type="U_INT_32"/>           <!--事件记录 ID 一个事件完成周期内使用相 同的 eventID-->
+            </data:unit>
+            <!--参数查询(T-Box向T平台反馈参数查询结果)-->
+            <data:unit name="TBOX_PramStatusCmd" key="65_2">
+                <data:include name="dispatcherUp"/>
+                <data:element name="eventID" type="U_INT_32"/>           <!--事件记录 ID 一个事件完成周期内使用相 同的 eventID-->
+                <data:element name="pramCmdDataSize" type="U_INT_8"/>    <!--查询参数数据长度-->
+                <data:element name="frequencySaveLocalMedia" type="U_INT_16"/><!--终 端 本 地 存 储 时 间 周 期 0~60000（0~60000ms）最小 计量单元：1ms. Fix 1S -->
+                <data:element name="frequencyForRealTimeReport" type="U_INT_16"/><!--信息上报周期 1~600（1~600s ）最小计量单元：1m.Fix 10S -->
+                <data:element name="frequencyForWarningReport" type="U_INT_16"/><!--出现报警时，信息上报时间 周期，有效值范围： 0～60000 （表示 0ms～60000ms），最 小计量单元：1ms，Fix 1S -->
+                <data:element name="hardwareVersion" type="STRING" size="5"/><!--硬件版本，终端自行定义-->
+                <data:element name="softwareVersion" type="STRING" size="5"/><!--软件版本，终端自行定义-->
+                <data:element name="frequencyHeartbeat" type="U_INT_8"/>  <!--车载终端心跳发送周期，有 效值范围：1～240（表示 1s ～240s），最小计量单元：1s Fix 60S-->
+                <data:element name="timeOutForTerminalSearch" type="U_INT_16"/><!--终端应答超时时间，有效值 范围： 1～600（表示 1s～600s ），最小计量单元：1s，Fix 60S 三次共 180S-->
+                <data:element name="timeOutForServerSearch" type="U_INT_16"/> <!--平台应答超时时间，有效值 范围： 1～600（表示 1s～600s ），最小计量单元：1s，Fix 60S 三次共 180S-->
+                <data:element name="enterpriseBroadcastAddress" type="BYTE" size="6"/> <!--企业平台 IP，IPV4 的前两个 字节为 0 -->
+                <data:element name="enterpriseBroadcastPort" type="U_INT_16"/> <!--企业平台端口 -->
+            </data:unit>
+
+            <!--远程车辆诊断(T平台向T-Box发送远程诊断请求)-->
+            <data:unit name="TBOX_DiagnosticCommandCmd" key="66_1">
+                <data:include name="dispatcherDown"/>
+                <data:element name="eventID" type="U_INT_32"/>      <!--事件记录 ID 一个事件完成周期内使用 相同的 eventID-->
+            </data:unit>
+            <!--远程车辆诊断(T-Box向T平台反馈远程诊断结果)-->
+            <data:unit name="TBOX_DiagnosticCommandAck" key="66_2">
+                <data:include name="dispatcherUp"/>
+                <data:element name="eventID" type="U_INT_32"/>      <!--事件记录 ID 一个事件完成周期内使用 相同的 eventID-->
+                <data:element name="diagData" type="BYTE" size="2"/><!--诊断数据 -->
+            </data:unit>
+
+            <!--上报数据设置(T平台向T-Box发送设置上报数据命令)-->
+            <data:unit name="TBOX_SignalSettingCmd" key="81_1">
+                <data:include name="dispatcherDown"/>
+                <data:element name="eventID" type="U_INT_32"/>  <!--事件记录 ID 一个事件完成周 期内使用相同的 eventID-->
+                <data:element name="realTimeDataValid" type="U_INT_32"/> <!--实时数据是否有 效位，参见附录 5.3 实时/补发数 据有效位数据结 构-->
+                <data:element name="frequencyForRealTimeReport" type="U_INT_16"/> <!--信 息 上 报 周 期 1~600（1~600s） 最小计量单元：1s-->
+            </data:unit>
+            <!--上报数据设置(T-Box反馈设置结果)-->
+            <data:unit name="TBOX_SignalSettingAck" key="81_2">
+                <data:include name="dispatcherUp"/>
+                <data:element name="eventID" type="U_INT_32"/>  <!--事件记录 ID 一个事件完成周 期内使用相同的 eventID-->
+                <data:element name="signalSettingAck" type="U_INT_8"/> <!--0：成功 1：失败-->
+            </data:unit>
+
+            <!--参数设置(T平台向T-Box发送参数设置请求)-->
+            <data:unit name="TBOX_PramSetCmd" key="82_1">
+                <data:include name="dispatcherDown"/>
+                <data:element name="eventID" type="U_INT_32"/>      <!--事件记录 ID 一个事件完成周 期内使用相同的 eventID-->
+                <data:element name="pramSetNumber" type="U_INT_8"/> <!--参数个数 -->
+                <data:element name="pramSetID1" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="frequencySaveLocalMedia" type="U_INT_16"/>     <!--本地保存周期 0~60000ms -->
+                <data:element name="pramSetID2" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="frequencyForReport" type="U_INT_16"/>     <!--数据上报周期 1~600s -->
+                <data:element name="pramSetID3" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="frequencyForWarningReport" type="U_INT_16"/>     <!--报警上报周期 0~60000ms -->
+                <data:element name="pramSetID4" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="frequencyHeartbeat" type="U_INT_8"/>     <!--心跳周期 1~240s -->
+                <data:element name="pramSetID5" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="timeOutForTerminalSearch" type="U_INT_16"/>     <!--终端应答超时 1~600s -->
+                <data:element name="pramSetID6" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="timeOutForServerSearch" type="U_INT_16"/>     <!--平台应答超时 1~600s -->
+                <data:element name="pramSetID7" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="licensePlate" type="STRING" size="9"/><!--车牌号-->
+                <data:element name="pramSetID8" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="uploadType" type="U_INT_8"/>     <!--上报方式 0:IP1  1:IP2  2:域名 -->
+                <data:element name="pramSetID9" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="enterpriseBroadcastAddress1" type="BYTE" size="6"/>     <!--IP1 -->
+                <data:element name="pramSetID10" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="enterpriseBroadcastPort1" type="U_INT_16"/>     <!--端口1 -->
+                <data:element name="pramSetID11" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="enterpriseBroadcastAddress2" type="BYTE" size="6"/>     <!--平台2 -->
+                <data:element name="pramSetID12" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="enterpriseBroadcastPort2" type="U_INT_16"/>     <!--端口2 -->
+                <data:element name="pramSetID13" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="enterpriseDomainNameSize" type="U_INT_8"/>     <!--域名长度 -->
+                <data:element name="pramSetID14" type="BYTE" size="1"/>     <!--参数ID-->
+                <data:element name="enterpriseDomainName" type="STRING" size="13"/>     <!--域名 -->
+            </data:unit>
+            <!--参数设置(T-Box向T平台反馈参数设置结果)-->
+            <data:unit name="TBOX_PramSetupAck" key="82_2">
+                <data:include name="dispatcherUp"/>
+                <data:element name="eventID" type="U_INT_32"/>      <!--事件记录 ID 一个事件完成周 期内使用相同的 eventID-->
+                <data:element name="pramSetAck" type="U_INT_8"/>    <!--参数个数-->
+                <data:element name="pramSetID" type="BYTE" size="13"/>     <!--参数ID列-->
+                <data:element name="pramValue" type="BYTE" size="13"/>     <!--0：成功 1：失败-->
+            </data:unit>
+
+            <!--参数升级(T平台向T-Box发送参数升级指令)-->
+            <data:unit name="TBOX_PramUpdateCmd" key="83_1">
+                <data:include name="dispatcherDown"/>
+                <data:element name="eventID" type="U_INT_32"/>     <!--事件记录 ID 一个事件完成周期内使 用相同的 eventID-->
+                <data:element name="PramVersion" type="STRING" size="5"/> <!--参数版本号 -->
+            </data:unit>
+            <!--参数升级(T-Box向T平台反馈参数升级指令接收)-->
+            <data:unit name="TBOX_PramUpdateAck" key="83_2">
+                <data:include name="dispatcherUp"/>
+                <data:element name="eventID" type="U_INT_32"/>    <!--事件记录 ID 一个事件完成周期内使 用相同的 eventID-->
+            </data:unit>
+            <!--参数升级(T-Box向T平台反馈参数升级请求)-->
+            <data:unit name="TBOX_PramUpdateReq" key="83_3">
+                <data:include name="dispatcherUp"/>
+                <data:element name="eventID" type="U_INT_32"/>     <!--事件记录 ID 一个事件完成周期内使 用相同的 eventID-->
+                <data:element name="PramVersion" type="STRING" size="5"/> <!--参数版本号 -->
+            </data:unit>
+            <!--参数升级(T平台向T-Box发送参数升级数据包)-->
+            <data:unit name="TBOX_PramUpdateResp" key="83_4">
+                <data:include name="dispatcherDown"/>
+                <data:element name="eventID" type="U_INT_32"/>        <!--事件记录 ID 一个事件完成周期内使 用相同的 eventID-->
+                <data:element name="pramUpdateReady" type="U_INT_8"/> <!--0：可以开始升级 1：无法开始升级-->
+            </data:unit>
+            <!--参数升级(T-Box向T平台发送参数升级结果)-->
+            <data:unit name="TBOX_PramUpdateResult" key="83_5">
+                <data:include name="dispatcherUp"/>
+                <data:element name="eventID" type="U_INT_32"/>  <!--事件记录 ID 一个事件完成周期内使 用相同的 eventID-->
+                <data:element name="pramUpdateResult" type="U_INT_8"/> <!--0：成功 1：失败-->
+                <data:element name="packetNumber" type="U_INT_16"/> <!--包号，1~m 与接收到 packet 号同步-->
+                <data:element name="backPacketNumber" type="U_INT_16"/> <!--BackPacket号1~m接收方记忆的当前包号，通常是和当前发送方的 包号同步，如果出现包 号不匹配的时候，此包 号为接收方上一次接收 成功的包号-->
+                <data:element name="responseStatus" type="U_INT_8"/> <!--0:OK  1:CheckSum error  2：长度超过 480 error  3：当前包号码不匹配 （比如此次应该接收第 5 包，来的不是第 5 包） 4:没有接收到首包就接 收到其他包错误  5：在中间包接收时来了 头包-->
+                <data:element name="check" type="U_INT_8"/>  <!--检查-->
+            </data:unit>
+        </data:body>
+        <data:tail>
+            <data:element name="checkSum" type="BYTE"/>                     <!--数据包校验和-->
+        </data:tail>
+    </data:protocol>
+
+    <data:protocol id="ConversionLanDu" class="com.hp.data.protocol.ConversionLanDu" head="43605">
+        <data:head>
+            <data:element name="head" type="U_INT_16"/>                     <!--数据包标识-->
+            <data:element name="length" type="U_INT_16"/>                   <!--数据包长度-->
+            <data:element name="testFlag" type="U_INT_8"/>                  <!--是否是测试包，0正常1测试-->
+        </data:head>
+        <data:body>
+            <!--调度信息-->
+            <data:elementGroup name="dispatcherUp">
+                <data:element name="sendingTime" type="U_INT_32"/>          <!--从 1970-01-01 00:00:00 到现在的秒数来表示-->
+                <data:element name="applicationID" type="U_INT_8"/>         <!--业务类型编号-->
+                <data:element name="messageID" type="U_INT_8"/>             <!--消息类型编号-->
+                <data:element name="imei" type="STRING" size="15"/>         <!--International Mobile Equipment Identity-->
+                <data:element name="protocolVersionNumber" type="U_INT_8"/> <!--协议版本号-->
+                <data:element name="vehicleID" type="BYTE" size="2"/>            <!--车场编号-->
+                <data:element name="tripID" type="U_INT_16"/>                <!--记录电动机启动次数，0~65535 后清零-->
+                <data:element name="reserved" type="U_INT_16"/>             <!--预留-->
+            </data:elementGroup>
+            <data:elementGroup name="dispatcherDown">
+                <data:element name="sendingTime" type="U_INT_32"/>          <!--从 1970-01-01 00:00:00 到现在的秒数来表示-->
+                <data:element name="applicationID" type="U_INT_8"/>         <!--业务类型编号-->
+                <data:element name="messageID" type="U_INT_8"/>             <!--消息类型编号-->
+            </data:elementGroup>
+
+
+
+            <!--电检(T-Box将向T平台发送电检请求)-->
+            <data:unit name="TBOX_DiaRequest" key="17_1">
+                <data:include name="dispatcherUp"/>
+                <!--内容信息-->
+                <data:element name="eventID" type="U_INT_32"/>          <!--事件记录ID一个事件完成周期内使相同的eventID-->
+                <data:element name="diaReportDataSize" type="U_INT_8"/><!--状态数据长度-->
+                <data:element name="serialNumber" type="STRING" size="12"/><!--车载终端编号-->
+                <data:element name="testTime" type="U_INT_32"/>          <!--测试时间： 使用从 1970-01-01 00:00:00 到现在的秒数来表示-->
+                <data:element name="ledTest" type="U_INT_8"/>            <!--LED检测结果 Bit0：成功 Bit1：失败 Bit2 ：未测试-->
+                <data:element name="farmTest" type="U_INT_8"/>           <!--FARM检测结果 Bit0：成功 Bit1：失败 Bit2 ：未测试-->
+                <data:element name="sdTest" type="U_INT_8"/>             <!--SD检测结果 Bit0：成功 Bit1：失败 Bit2 ：未测试-->
+                <data:element name="gpsTest" type="U_INT_8"/>            <!--GPS检测结果 Bit0：成功 Bit1：失败 Bit2 ：未测试-->
+                <data:element name="gprsTest" type="U_INT_8"/>           <!--GPRS Signal Strength检测 结果 Bit0：成功 Bit1：失败 Bit2 ：未测试-->
+                <data:element name="resetBatteryMapArrayTest" type="U_INT_8"/><!--Reset Battery Map Array检 测结果 Bit0：成功 Bit1：失败 Bit2 ：未测试-->
+                <data:element name="canActionTest" type="U_INT_8"/>      <!--CAN Action检测结果 Bit0：成功 Bit1：失败 Bit2 ：未测试 -->
+                <data:element name="serverCommTest" type="U_INT_8"/>     <!--serverCommTest 检测 结果 Bit0：成功 Bit1：失败 Bit2 ：未测试 -->
+            </data:unit>
+            <!--电检(T平台向T-Box反馈T-Box检测结果)-->
+            <data:unit name="TBOX_DiaResp" key="17_2">
+                <data:include name="dispatcherDown"/>
+                <!--内容信息-->
+                <data:element name="eventID" type="U_INT_32"/>           <!--事件记录 ID 一个事件完成周期内使用 相同的 eventID-->
+                <data:element name="diaReportResp" type="U_INT_8"/>    <!--0：成功 （TBOX_DiagRequest 中各 检测项均为成功） 1：失败 （TBOX_DiagRequest 中有一项为失败)-->
+            </data:unit>
+
+
+        </data:body>
+        <data:tail>
+            <data:element name="checkSum" type="BYTE"/>                     <!--数据包校验和-->
+        </data:tail>
+    </data:protocol>
+</beans>

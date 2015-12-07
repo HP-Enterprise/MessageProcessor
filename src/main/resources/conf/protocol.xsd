@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.incardata.com.cn/schema/tags"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            targetNamespace="http://www.incardata.com.cn/schema/tags"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+    <xsd:import namespace="http://www.springframework.org/schema/beans" />
+    <!--类型定义-->
+    <xsd:complexType name="elementType">
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="type" use="required">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="BYTE" />
+                    <xsd:enumeration value="INT_8" />
+                    <xsd:enumeration value="INT_16" />
+                    <xsd:enumeration value="INT_32" />
+                    <xsd:enumeration value="U_INT_8" />
+                    <xsd:enumeration value="U_INT_16" />
+                    <xsd:enumeration value="U_INT_32" />
+                    <xsd:enumeration value="STRING" />
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+        <xsd:attribute name="size" default="0"/>
+    </xsd:complexType>
+    <xsd:complexType name="elementGroupType">
+        <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+            <xsd:element name="element" type="elementType"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string"/>
+    </xsd:complexType>
+    <xsd:complexType name="includeType">
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
+    </xsd:complexType>
+    <!--结构定义-->
+    <xsd:element name="protocol">
+        <xsd:annotation>
+            <xsd:documentation>protocol definition</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:sequence>
+                        <xsd:element name="head" maxOccurs="1">
+                            <xsd:complexType>
+                                <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+                                    <xsd:element name="element" type="elementType"/>
+                                </xsd:sequence>
+                                <xsd:attribute name="name" type="xsd:string"/>
+                            </xsd:complexType>
+                        </xsd:element>
+                        <xsd:element name="body" maxOccurs="1">
+                            <xsd:complexType>
+                                <xsd:sequence>
+                                    <xsd:element name="elementGroup" minOccurs="0" maxOccurs="unbounded" type="elementGroupType"/>
+                                    <xsd:element name="unit" maxOccurs="unbounded">
+                                        <xsd:complexType>
+                                            <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                                                <xsd:element name="include" type="includeType"/>
+                                                <xsd:element name="element" type="elementType" minOccurs="1"/>
+                                            </xsd:choice>
+                                            <xsd:attribute name="name" type="xsd:string"/>
+                                            <xsd:attribute name="key" type="xsd:string" use="required"/>
+                                        </xsd:complexType>
+                                    </xsd:element>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                        <xsd:element name="tail" minOccurs="0" maxOccurs="1">
+                            <xsd:complexType>
+                                <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+                                    <xsd:element name="element" type="elementType"/>
+                                </xsd:sequence>
+                                <xsd:attribute name="name" type="xsd:string"/>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                    <xsd:attribute name="class" type="xsd:string" use="required"/>
+                    <xsd:attribute name="head" type="xsd:string" use="required"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
