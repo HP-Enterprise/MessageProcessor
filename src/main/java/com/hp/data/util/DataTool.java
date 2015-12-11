@@ -1,6 +1,7 @@
 package com.hp.data.util;
 
 import com.hp.data.bean.landu.VehicleDataUpload;
+import com.hp.data.bean.landu.VehicleWarningUpload;
 import com.hp.data.exception.ConversionException;
 import io.netty.buffer.ByteBuf;
 import org.slf4j.Logger;
@@ -183,6 +184,25 @@ public class DataTool {
         String s = "\000";
         if(object instanceof VehicleDataUpload){
             VehicleDataUpload v = (VehicleDataUpload) object;
+            StringBuilder sb = new StringBuilder();
+            sb.append(v.getSpeed());
+            sb.append(s);
+            sb.append(v.getCurrentDriveDistance());
+            sb.append(s);
+            sb.append(v.getLongitude());
+            sb.append(',');
+            sb.append(v.getLatitude());
+            sb.append(',');
+            sb.append(v.getDirect());
+            sb.append(',');
+            sb.append(v.getPositionTime());
+            sb.append(',');
+            sb.append(v.getPositionMethod());
+            sb.append(s);
+            System.out.println(sb);
+            return sb.toString();
+        }else if(object instanceof VehicleWarningUpload){
+            VehicleWarningUpload v = (VehicleWarningUpload) object;
             StringBuilder sb = new StringBuilder();
             sb.append(v.getSpeed());
             sb.append(s);

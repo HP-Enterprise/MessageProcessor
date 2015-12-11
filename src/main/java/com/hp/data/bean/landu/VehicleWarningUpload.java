@@ -76,9 +76,9 @@ public class VehicleWarningUpload extends LanDuMsgHead{
             switch(vehicleWarningUpload.getWarningType()){
                 case 0x01 ://新故障报警
                     vehicleWarningUpload.setFaultNum(bb.readByte());
-                    String[] faultCodes = vehicleWarningUpload.getFaultCode();
-                    String[] faultAttributes = vehicleWarningUpload.getFaultCodeAttribute();
-                    String[] faultMsgs = vehicleWarningUpload.getFaultMsg();
+                    String[] faultCodes = new String[vehicleWarningUpload.getFaultNum()];
+                    String[] faultAttributes = new String[vehicleWarningUpload.getFaultNum()];
+                    String[] faultMsgs = new String[vehicleWarningUpload.getFaultNum()];;
                     for(int i=0;i<vehicleWarningUpload.getFaultNum();i++){
                         faultCodes[i] = dataTool.readStringZero(bb);
                         faultAttributes[i] = dataTool.readStringZero(bb);
