@@ -109,14 +109,20 @@ public class PositionData extends LanDuMsgHead{
             countByte += locationMsg.length();
         }
 
-        bb.writeShort(countByte + addByte - 2);//checkSum 去掉数据包标志2个字节
-        countByte += 2;
+        countByte += 2;//校验和2个字节
+        //回写计算后的数据包长度
         int index=bb.writerIndex();
         bb.resetWriterIndex();
-        bb.writeShort(countByte + addByte - 2);
+        bb.writeShort(countByte +addByte -2);
         bb.writeShort(~(countByte + addByte - 2));
         bb.writerIndex(index);
-        System.out.println("------>>>统计字节个数:" + (countByte + addByte));
+        //计算校验和
+        int sum=0;
+        byte[] bytes = dataTool.getBytesFromByteBuf(bb);
+        for(int i=2;i<bytes.length;i++){
+            sum += bytes[i] & 0xFF;
+        }
+        bb.writeShort(sum);//checkSum
         return dataTool.getBytesFromByteBuf(bb);
     }
     /**
