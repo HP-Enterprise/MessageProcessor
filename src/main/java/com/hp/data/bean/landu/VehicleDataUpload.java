@@ -184,7 +184,7 @@ public class VehicleDataUpload extends LanDuMsgHead{
             case 0x01://发动机点火时
                 dataTool.writeStringZero(bb, this.getFireVoltage(), true);
                 //定位信息
-                String locationMsg = dataTool.buildLocationString(this);
+                String locationMsg = dataTool.buildLocationString(this.getSpeed(),this.getCurrentDriveDistance(),this.getLongitude(),this.getLatitude(),this.getDirect(),this.getPositionTime(),this.getPositionMethod());
                 dataTool.writeStringZero(bb, locationMsg, false);
                 countByte += this.fireVoltage.length() + locationMsg.length();
                 addByte +=1;
@@ -220,7 +220,7 @@ public class VehicleDataUpload extends LanDuMsgHead{
                 bb.writeInt(this.getOverSpeedTime());
                 bb.writeByte(this.getMaxSpeed());
                 //定位信息
-                String locationMessage = dataTool.buildLocationString(this);
+                String locationMessage = dataTool.buildLocationString(this.getSpeed(),this.getCurrentDriveDistance(),this.getLongitude(),this.getLatitude(),this.getDirect(),this.getPositionTime(),this.getPositionMethod());
                 dataTool.writeStringZero(bb, locationMessage, false);
                 countByte +=  2 + 2 + 2 + 4 + 1 + locationMessage.length();
                 break;

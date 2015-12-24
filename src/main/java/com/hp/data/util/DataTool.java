@@ -23,6 +23,7 @@ public class DataTool {
     private ByteBuffer buf;
 
     private Logger _logger = LoggerFactory.getLogger(DataTool.class);
+    //校验和验证
     public  boolean checkSum(byte[] bytes){
         int sum=0;
         for(int i=2;i<bytes.length-2;i++){
@@ -31,6 +32,15 @@ public class DataTool {
         String hexStr = Integer.toHexString(bytes[bytes.length-2])+ Integer.toHexString(bytes[bytes.length -1]);
         _logger.info(">>checkSum:" + Integer.toHexString(sum) + "<>" + hexStr);
         return hexStr == Integer.toHexString(sum);
+    }
+    //计算校验和并返回
+    public int getCheckSum(ByteBuf bb){
+        int sum=0;
+        byte[] bytes = getBytesFromByteBuf(bb);
+        for(int i=2;i<bytes.length;i++){
+            sum += bytes[i] & 0xFF;
+        }
+        return sum;
     }
 
     public  ByteBuf getByteBuf(String str){
@@ -175,54 +185,28 @@ public class DataTool {
             throw new ConversionException("字符串"+str+"0无法转换成byte数组");
         }
     }
+
     /**
      * 构建定位信息字符串
-     * @param object 包含定位信息属性的对象
-     * @return
      */
-    public String buildLocationString(Object object){
+    public String buildLocationString(String speed,String currentDriveDistance,String longitude,String latitude,String direct,String positionTime,String positionMethod) {
         String s = "\000";
-        if(object instanceof VehicleDataUpload){
-            VehicleDataUpload v = (VehicleDataUpload) object;
-            StringBuilder sb = new StringBuilder();
-            sb.append(v.getSpeed());
-            sb.append(s);
-            sb.append(v.getCurrentDriveDistance());
-            sb.append(s);
-            sb.append(v.getLongitude());
-            sb.append(',');
-            sb.append(v.getLatitude());
-            sb.append(',');
-            sb.append(v.getDirect());
-            sb.append(',');
-            sb.append(v.getPositionTime());
-            sb.append(',');
-            sb.append(v.getPositionMethod());
-            sb.append(s);
-            System.out.println(sb);
-            return sb.toString();
-        }else if(object instanceof VehicleWarningUpload){
-            VehicleWarningUpload v = (VehicleWarningUpload) object;
-            StringBuilder sb = new StringBuilder();
-            sb.append(v.getSpeed());
-            sb.append(s);
-            sb.append(v.getCurrentDriveDistance());
-            sb.append(s);
-            sb.append(v.getLongitude());
-            sb.append(',');
-            sb.append(v.getLatitude());
-            sb.append(',');
-            sb.append(v.getDirect());
-            sb.append(',');
-            sb.append(v.getPositionTime());
-            sb.append(',');
-            sb.append(v.getPositionMethod());
-            sb.append(s);
-            System.out.println(sb);
-            return sb.toString();
-        }else {
-            return null;
-        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(speed);
+        sb.append(s);
+        sb.append(currentDriveDistance);
+        sb.append(s);
+        sb.append(longitude);
+        sb.append(',');
+        sb.append(latitude);
+        sb.append(',');
+        sb.append(direct);
+        sb.append(',');
+        sb.append(positionTime);
+        sb.append(',');
+        sb.append(positionMethod);
+        sb.append(s);
+        return sb.toString();
     }
 
     public  String bytes2hex(byte[] bArray) {

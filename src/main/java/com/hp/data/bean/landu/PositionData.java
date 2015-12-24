@@ -104,7 +104,7 @@ public class PositionData extends LanDuMsgHead{
         addByte +=1+1+1+1;
         //定位信息
         for(int i=0; i<this.getLocationNum();i++){
-            String locationMsg = buildLocationString(this.getSpeed()[i], this.getCurrentDriveDistance()[i],this.getLongitude()[i],this.getLatitude()[i],this.getDirect()[i],this.getPositionTime()[i],this.getPositionMethod()[i]);
+            String locationMsg = dataTool.buildLocationString(this.getSpeed()[i], this.getCurrentDriveDistance()[i],this.getLongitude()[i],this.getLatitude()[i],this.getDirect()[i],this.getPositionTime()[i],this.getPositionMethod()[i]);
             dataTool.writeStringZero(bb, locationMsg, false);
             countByte += locationMsg.length();
         }
@@ -124,28 +124,6 @@ public class PositionData extends LanDuMsgHead{
         }
         bb.writeShort(sum);//checkSum
         return dataTool.getBytesFromByteBuf(bb);
-    }
-    /**
-     * 构建定位信息字符串
-     */
-    public String buildLocationString(String speed,String currentDriveDistance,String longitude,String latitude,String direct,String positionTime,String positionMethod){
-        String s = "\000";
-        StringBuilder sb = new StringBuilder();
-        sb.append(speed);
-        sb.append(s);
-        sb.append(currentDriveDistance);
-        sb.append(s);
-        sb.append(longitude);
-        sb.append(',');
-        sb.append(latitude);
-        sb.append(',');
-        sb.append(direct);
-        sb.append(',');
-        sb.append(positionTime);
-        sb.append(',');
-        sb.append(positionMethod);
-        sb.append(s);
-        return sb.toString();
     }
 
     public void print(){
