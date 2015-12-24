@@ -23,17 +23,17 @@ public class UploadVehicleDataTest {
     public void testUploadVehicleDataEncoded(){
         uploadVehicleData.setPackageID((byte) 49);
 
-        uploadVehicleData.setObdID("INCAR10002470682");
+        uploadVehicleData.setObdID("123456");
         uploadVehicleData.setTripID(1897);
         uploadVehicleData.setVID("43");
-        uploadVehicleData.setVIN("LSGSA52M2AY186330");
+        uploadVehicleData.setVIN("1234567M2AY186330");
         uploadVehicleData.setGainDataTime("2015-12-24 14:17:30");
         uploadVehicleData.setDataType((byte) 5);
         if (uploadVehicleData.getDataType()>=1 && uploadVehicleData.getDataType()<=4) {
             uploadVehicleData.setSpeed("4");
             uploadVehicleData.setCurrentDriveDistance("8379");
             uploadVehicleData.setLongitude("E116.475051");
-            uploadVehicleData.setLatitude("N40.012705");
+            uploadVehicleData.setLatitude("N10.012705");
             uploadVehicleData.setDirect("98");
             uploadVehicleData.setPositionTime("2015-12-24 06:17:29");
             uploadVehicleData.setPositionMethod("2");
@@ -46,17 +46,17 @@ public class UploadVehicleDataTest {
     public void testLoop(){
         uploadVehicleData.setPackageID((byte) 49);
 
-        uploadVehicleData.setObdID("INCAR10002470682");
+        uploadVehicleData.setObdID("123456");
         uploadVehicleData.setTripID(1897);
         uploadVehicleData.setVID("43");
-        uploadVehicleData.setVIN("LSGSA52M2AY186330");
+        uploadVehicleData.setVIN("1234567M2AY186330");
         uploadVehicleData.setGainDataTime("2015-12-24 14:17:30");
         uploadVehicleData.setDataType((byte) 3);
         if (uploadVehicleData.getDataType()>=1 && uploadVehicleData.getDataType()<=4) {
             uploadVehicleData.setSpeed("4");
             uploadVehicleData.setCurrentDriveDistance("8379");
             uploadVehicleData.setLongitude("E116.475051");
-            uploadVehicleData.setLatitude("N40.012705");
+            uploadVehicleData.setLatitude("N10.012705");
             uploadVehicleData.setDirect("98");
             uploadVehicleData.setPositionTime("2015-12-24 06:17:29");
             uploadVehicleData.setPositionMethod("2");
