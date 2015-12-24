@@ -51,7 +51,7 @@ public class DataToolTest {
         v.setDirect("30");
         v.setPositionTime("2014-01-23 10:59:05");
         v.setPositionMethod("1");
-        String locationMsg = dataTool.buildLocationString(v);
+        String locationMsg = dataTool.buildLocationString(v.getSpeed(),v.getCurrentDriveDistance(),v.getLongitude(),v.getLatitude(),v.getDirect(),v.getPositionTime(),v.getPositionMethod());
         System.out.println(locationMsg.length());//80 1203 E123.008122,N11.321234,30,2014-01-23 10:59:05,1
     }
 }

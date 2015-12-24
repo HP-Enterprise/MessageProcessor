@@ -129,7 +129,7 @@ public class VehicleWarningUpload extends LanDuMsgHead{
         countByte += 2+this.obdID.length()+4+this.VID.length()+this.VIN.length()+this.gainDataTime.length()+1;
         addByte +=1+1+1+1;
         //定位信息
-        String locationMsg = dataTool.buildLocationString(this);
+        String locationMsg = dataTool.buildLocationString(this.getSpeed(),this.getCurrentDriveDistance(),this.getLongitude(),this.getLatitude(),this.getDirect(),this.getPositionTime(),this.getPositionMethod());
         dataTool.writeStringZero(bb, locationMsg, false);
         countByte += locationMsg.length();
 
